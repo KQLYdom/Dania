@@ -783,10 +783,14 @@ async def update_category(
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
+    db = SessionLocal()
+    users = db.query(models.User).all()
+    db.close()
 
     return templates.TemplateResponse(
         request=request,
-        name="login.html"
+        name="login.html",
+        context={"users": users}
     )
 
 
