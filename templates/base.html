@@ -12,11 +12,20 @@
 
 <body>
 
+<!-- Mobil hamburger -->
+<button class="menu-toggle" id="menuToggle">☰</button>
+
+<!-- Háttér sötétítés -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <div class="layout">
 
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
 
-        <h2>🏠 Home Manager</h2>
+        <div class="sidebar-top">
+            <h2>🏠 Home Manager</h2>
+            <button class="close-sidebar" id="closeSidebar">✕</button>
+        </div>
 
         <nav>
             <a href="/">🏠 Dashboard</a>
@@ -27,22 +36,66 @@
             <a href="/todo">✅ To-do</a>
             <a href="/settings">⚙️ Settings</a>
             <a href="/logout">🚪 Logout</a>
-            
         </nav>
 
     </aside>
 
     <div class="page">
         {% block content %}{% endblock %}
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </div>
 
 </div>
 
+<!-- Vissza fel gomb -->
+<button id="backToTop" class="back-to-top">
+    ⬆ Top
+</button>
+
 <script>
-document.querySelectorAll(".progress-fill").forEach(bar => {
-    const percent = Number(bar.dataset.percent || 0);
-    bar.style.width = percent + "%";
+document.querySelectorAll(".progress-fill").forEach(bar=>{
+    bar.style.width=(bar.dataset.percent||0)+"%";
+});
+
+// Hamburger
+const sidebar=document.getElementById("sidebar");
+const overlay=document.getElementById("sidebarOverlay");
+const openBtn=document.getElementById("menuToggle");
+const closeBtn=document.getElementById("closeSidebar");
+
+function closeMenu(){
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+}
+
+openBtn?.addEventListener("click",()=>{
+    sidebar.classList.add("open");
+    overlay.classList.add("show");
+});
+
+closeBtn?.addEventListener("click",closeMenu);
+overlay?.addEventListener("click",closeMenu);
+
+// Automatikus bezárás linkre
+document.querySelectorAll(".sidebar nav a").forEach(a=>{
+    a.addEventListener("click",closeMenu);
+});
+
+// Back to top
+const backBtn=document.getElementById("backToTop");
+
+window.addEventListener("scroll",()=>{
+    if(window.scrollY>400){
+        backBtn.classList.add("show");
+    }else{
+        backBtn.classList.remove("show");
+    }
+});
+
+backBtn.addEventListener("click",()=>{
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
 });
 </script>
 

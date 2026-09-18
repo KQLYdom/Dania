@@ -785,3 +785,304 @@ text-decoration:line-through;
         gap:8px;
     }
 }
+
+/* =========================
+   MOBILE RESPONSIVE
+   ========================= */
+
+@media (max-width: 768px) {
+
+    body{
+        padding:12px;
+    }
+
+    header h1{
+        font-size:28px;
+    }
+
+    header p{
+        font-size:14px;
+    }
+
+    /* Kártyák */
+    .card{
+        padding:18px;
+        border-radius:20px;
+    }
+
+    .card h2{
+        font-size:22px;
+    }
+
+    .card h3{
+        font-size:18px;
+    }
+
+    .big{
+        font-size:34px;
+    }
+
+    /* Felső statok */
+    .summary-grid{
+        grid-template-columns:1fr;
+        gap:14px;
+    }
+
+    .summary-grid > .card{
+        grid-column:auto !important;
+    }
+
+    /* Tartalom */
+    .content-grid{
+        grid-template-columns:1fr;
+        gap:16px;
+    }
+
+    .card-wide{
+        grid-column:auto;
+    }
+
+    /* Diagramok */
+    .chart-container{
+        height:260px;
+    }
+
+    /* Trend váltó */
+    .trend-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:14px;
+    }
+
+    .trend-switch{
+        width:100%;
+        display:grid;
+        grid-template-columns:repeat(6,1fr);
+        gap:6px;
+        padding:4px;
+    }
+
+    .trend-btn{
+        width:100%;
+        min-width:0;
+        padding:10px 0;
+        font-size:13px;
+    }
+
+    /* Budget */
+    .budget-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+    }
+
+    .budget-header div:last-child{
+        text-align:left !important;
+    }
+
+    /* Upcoming payments */
+    .upcoming-payment{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+    }
+
+    .payment-right{
+        text-align:left;
+    }
+
+    /* Shopping */
+    .shopping-list li{
+        font-size:15px;
+    }
+
+    /* Gombok */
+    .edit-btn,
+    button{
+        width:100%;
+        text-align:center;
+    }
+
+    /* Táblák (Money oldal) */
+    table{
+        display:block;
+        overflow-x:auto;
+        white-space:nowrap;
+        border-radius:16px;
+    }
+
+    th,td{
+        padding:10px 12px;
+        font-size:14px;
+    }
+
+    /* Formok */
+    input,
+    select,
+    textarea{
+        width:100%;
+        font-size:16px;
+        padding:12px;
+        border-radius:12px;
+    }
+
+    /* Login */
+    .login-card{
+        width:100%;
+        padding:24px;
+        border-radius:24px;
+    }
+
+    .login-card h1{
+        font-size:34px;
+    }
+}
+
+/* Extra kicsi telefonok */
+
+@media (max-width:420px){
+
+    body{
+        padding:10px;
+    }
+
+    .big{
+        font-size:28px;
+    }
+
+    .card{
+        padding:16px;
+    }
+
+    .chart-container{
+        height:220px;
+    }
+
+    .trend-btn{
+        font-size:12px;
+        padding:8px 0;
+    }
+}
+
+/* ===========================
+   MOBILE HAMBURGER
+=========================== */
+
+.menu-toggle{
+    display:none;
+}
+
+.close-sidebar{
+    display:none;
+}
+
+.sidebar-overlay{
+    display:none;
+}
+
+.back-to-top{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    border:none;
+    background:#2563EB;
+    color:white;
+    padding:12px 18px;
+    border-radius:999px;
+    font-weight:600;
+    cursor:pointer;
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(15px);
+    transition:.25s;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    z-index:1200;
+}
+
+.back-to-top.show{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
+}
+
+/* Telefon */
+
+@media(max-width:768px){
+
+    .layout{
+        display:block;
+    }
+
+    .page{
+        padding-top:70px;
+    }
+
+    .menu-toggle{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        position:fixed;
+        top:14px;
+        left:14px;
+        width:46px;
+        height:46px;
+        border:none;
+        border-radius:14px;
+        background:white;
+        box-shadow:0 10px 25px rgba(0,0,0,.18);
+        font-size:24px;
+        cursor:pointer;
+        z-index:1200;
+    }
+
+    .sidebar{
+        position:fixed;
+        left:-280px;
+        top:0;
+        width:260px;
+        height:100vh;
+        transition:left .28s ease;
+        z-index:1201;
+        overflow-y:auto;
+    }
+
+    .sidebar.open{
+        left:0;
+    }
+
+    .sidebar-top{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+    }
+
+    .close-sidebar{
+        display:block;
+        border:none;
+        background:transparent;
+        font-size:24px;
+        cursor:pointer;
+    }
+
+    .sidebar-overlay.show{
+        display:block;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.35);
+        z-index:1200;
+    }
+
+    .sidebar nav{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+        margin-top:24px;
+    }
+
+    .back-to-top{
+        bottom:18px;
+        right:18px;
+        padding:14px 18px;
+        font-size:14px;
+    }
+}
