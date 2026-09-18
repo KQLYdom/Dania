@@ -956,7 +956,6 @@ async def add_todo(
         "New to-do",
         f"{user} added: {task}",
         "/todo",
-        exclude_username=user,
     )
     db.close()
 

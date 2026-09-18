@@ -63,7 +63,6 @@ async def add_item(
         "New shopping item",
         f"{user} added: {name}",
         "/shopping",
-        exclude_username=user,
     )
 
     return RedirectResponse("/shopping", status_code=303)
