@@ -21,6 +21,11 @@ ALGORITHM = "HS256"
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
+USERS = {
+    "Fanni": pwd_context.hash("1234"),
+    "Istvan": pwd_context.hash("1234")
+}
+
 # ----------------------
 # Adatbázis létrehozása
 # ----------------------
