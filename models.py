@@ -129,3 +129,20 @@ class Setting(Base):
     id = Column(Integer, primary_key=True, index=True)
     key = Column(String, unique=True, nullable=False)
     value = Column(String, nullable=False)
+
+
+class PushSubscription(Base):
+    __tablename__ = "push_subscriptions"
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String, nullable=False)
+    endpoint = Column(String, unique=True, nullable=False)
+    p256dh = Column(String, nullable=False)
+    auth = Column(String, nullable=False)
+
+
+class NotificationLog(Base):
+    __tablename__ = "notification_log"
+
+    id = Column(Integer, primary_key=True)
+    event_key = Column(String, unique=True, nullable=False)

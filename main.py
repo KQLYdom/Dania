@@ -1,7 +1,9 @@
 from datetime import date
 from routes.dashboard import router as dashboard_router
-from fastapi import FastAPI, Request, Form, Depends
-from fastapi.responses import HTMLResponse, RedirectResponse
+import os
+
+from fastapi import FastAPI, Header, HTTPException, Request, Form, Depends
+from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from app_config import templates
 from sqlalchemy.orm import joinedload
@@ -10,6 +12,11 @@ from routes.shopping import router as shopping_router
 
 from database import engine, Base, SessionLocal
 import models
+from notification_service import (
+    is_configured,
+    send_due_payment_notifications,
+    send_push,
+)
 
 from fastapi import Response
 from jose import jwt, JWTError
@@ -117,6 +124,63 @@ app.mount(
     StaticFiles(directory="static"),
     name="static"
 )
+
+
+@app.get("/sw.js", include_in_schema=False)
+async def service_worker():
+    return FileResponse("static/sw.js", media_type="application/javascript")
+
+
+@app.post("/notifications/subscribe", include_in_schema=False)
+async def subscribe_to_notifications(request: Request):
+    username = get_current_user(request)
+    if not username:
+        raise HTTPException(status_code=401, detail="Please sign in first.")
+
+    if not is_configured():
+        raise HTTPException(status_code=503, detail="Notifications are not configured yet.")
+
+    subscription = await request.json()
+    endpoint = subscription.get("endpoint")
+    keys = subscription.get("keys", {})
+    p256dh = keys.get("p256dh")
+    auth = keys.get("auth")
+
+    if not endpoint or not p256dh or not auth:
+        raise HTTPException(status_code=400, detail="Invalid push subscription.")
+
+    db = SessionLocal()
+    saved_subscription = db.query(models.PushSubscription).filter(
+        models.PushSubscription.endpoint == endpoint
+    ).first()
+
+    if saved_subscription:
+        saved_subscription.username = username
+        saved_subscription.p256dh = p256dh
+        saved_subscription.auth = auth
+    else:
+        db.add(models.PushSubscription(
+            username=username,
+            endpoint=endpoint,
+            p256dh=p256dh,
+            auth=auth,
+        ))
+
+    db.commit()
+    db.close()
+    return {"ok": True}
+
+
+@app.post("/notifications/check-due", include_in_schema=False)
+async def check_due_notifications(x_notification_cron_token: str | None = Header(default=None)):
+    cron_token = os.getenv("NOTIFICATION_CRON_TOKEN")
+    if not cron_token or x_notification_cron_token != cron_token:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    db = SessionLocal()
+    send_due_payment_notifications(db)
+    db.close()
+    return {"ok": True}
 
 
 def create_default_users():
@@ -712,7 +776,8 @@ async def settings(request: Request):
         request=request,
         name="settings.html",
         context={
-            "categories": categories
+            "categories": categories,
+            "push_public_key": os.getenv("VAPID_PUBLIC_KEY", ""),
         }
     )
 
@@ -866,10 +931,15 @@ async def todo_page(request: Request):
 
 @app.post("/todo/add")
 async def add_todo(
+    request: Request,
     task: str = Form(...),
     assigned_to: str = Form(...),
     due_date: str = Form("")
 ):
+
+    user = get_current_user(request)
+    if not user:
+        return RedirectResponse("/login", status_code=303)
 
     db = SessionLocal()
 
@@ -881,6 +951,13 @@ async def add_todo(
 
     db.add(todo)
     db.commit()
+    send_push(
+        db,
+        "New to-do",
+        f"{user} added: {task}",
+        "/todo",
+        exclude_username=user,
+    )
     db.close()
 
     return RedirectResponse("/todo", status_code=303)

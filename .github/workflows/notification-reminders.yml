@@ -1,0 +1,17 @@
+name: Payment reminder notifications
+
+on:
+  schedule:
+    # Runs daily at 08:00 UTC. The app sends only reminders that have not been sent before.
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+
+jobs:
+  send-reminders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check payments due soon
+        run: |
+          curl --fail --silent --show-error --request POST \
+            --header "x-notification-cron-token: ${{ secrets.NOTIFICATION_CRON_TOKEN }}" \
+            https://home-manager-fi.fly.dev/notifications/check-due

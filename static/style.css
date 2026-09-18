@@ -426,6 +426,17 @@ hr{
 
 }
 
+.notification-settings p{
+    color:#6b7280;
+    line-height:1.5;
+    margin:8px 0 16px;
+}
+
+.notification-settings .notification-status{
+    margin:12px 0 0;
+    font-size:14px;
+}
+
 /* ---------- Collapsible history sections ---------- */
 
 .history-section{

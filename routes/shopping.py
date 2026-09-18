@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 import models
 from database import SessionLocal
+from notification_service import send_push
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -57,6 +58,13 @@ async def add_item(
         )
     )
     db.commit()
+    send_push(
+        db,
+        "New shopping item",
+        f"{user} added: {name}",
+        "/shopping",
+        exclude_username=user,
+    )
 
     return RedirectResponse("/shopping", status_code=303)
 
