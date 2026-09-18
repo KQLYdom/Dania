@@ -2,9 +2,22 @@ from datetime import date
 import models
 
 
-def get_current_user(request):
-    return request.cookies.get("user")
+from jose import jwt, JWTError
 
+SECRET_KEY = "fanni-istvan-home-manager-secret"
+ALGORITHM = "HS256"
+
+def get_current_user(request):
+    token = request.cookies.get("token")
+
+    if not token:
+        return None
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload.get("sub")
+    except JWTError:
+        return None
 
 def sync_recurring_payments(db):
 

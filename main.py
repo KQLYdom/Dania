@@ -147,10 +147,16 @@ def create_default_users():
 create_default_users()
 
 
+from datetime import datetime, timedelta
+
 def create_token(username):
+    payload = {
+        "sub": username,
+        "exp": datetime.utcnow() + timedelta(days=30)
+    }
 
     return jwt.encode(
-        {"username": username},
+        payload,
         SECRET_KEY,
         algorithm=ALGORITHM
     )
