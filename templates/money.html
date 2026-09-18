@@ -24,7 +24,7 @@
 
 </section>
 
-<section class="content-grid">
+<section class="content-grid money-form-grid">
 
     <!-- Add Income -->
 
@@ -130,9 +130,12 @@
 
 </section>
 
-<section class="card">
+<details class="card history-section">
 
-    <h2>Recent Transactions</h2>
+    <summary>
+        <span class="history-title">🕘 Recent Transactions</span>
+        <span class="history-toggle">Show {{ transactions|length }} <span aria-hidden="true">⌄</span></span>
+    </summary>
 
     {% if transactions %}
 
@@ -178,13 +181,16 @@
 
     {% endif %}
 
-</section>
+</details>
 
 <!-- Expense History -->
 
-<section class="card">
+<details class="card history-section">
 
-    <h2>💸 Expenses History</h2>
+    <summary>
+        <span class="history-title">💸 Expenses History</span>
+        <span class="history-toggle">Show {{ expenses|length }} <span aria-hidden="true">⌄</span></span>
+    </summary>
 
     {% if expenses %}
 
@@ -241,13 +247,16 @@
 
     {% endif %}
 
-</section>
+</details>
 
 <!-- Income History -->
 
-<section class="card">
+<details class="card history-section">
 
-    <h2>💰 Income History</h2>
+    <summary>
+        <span class="history-title">💰 Income History</span>
+        <span class="history-toggle">Show {{ incomes|length }} <span aria-hidden="true">⌄</span></span>
+    </summary>
 
     {% if incomes %}
 
@@ -304,6 +313,6 @@
 
     {% endif %}
 
-</section>
+</details>
 
 {% endblock %}

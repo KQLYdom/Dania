@@ -426,6 +426,51 @@ hr{
 
 }
 
+/* ---------- Collapsible history sections ---------- */
+
+.history-section{
+    margin-top:24px;
+}
+
+.history-section summary{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    cursor:pointer;
+    list-style:none;
+}
+
+.history-section summary::-webkit-details-marker{
+    display:none;
+}
+
+.history-title{
+    font-size:24px;
+    font-weight:700;
+}
+
+.history-toggle{
+    color:#2563eb;
+    font-size:14px;
+    font-weight:600;
+    white-space:nowrap;
+}
+
+.history-toggle span{
+    display:inline-block;
+    margin-left:4px;
+    transition:transform .2s ease;
+}
+
+.history-section[open] .history-toggle span{
+    transform:rotate(180deg);
+}
+
+.history-section[open] summary{
+    margin-bottom:18px;
+}
+
 .todo-row{
 
 display:flex;
@@ -556,6 +601,11 @@ text-decoration:line-through;
     align-items:start;
 }
 
+/* A Money oldalon a két rögzítő űrlap azonos szélességű. */
+.money-form-grid{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+}
+
 .card-wide{
     grid-column:1 / -1;
 }
@@ -573,6 +623,10 @@ text-decoration:line-through;
 @media (max-width:900px){
 
     .content-grid{
+        grid-template-columns:1fr;
+    }
+
+    .money-form-grid{
         grid-template-columns:1fr;
     }
 
