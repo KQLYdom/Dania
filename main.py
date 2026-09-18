@@ -788,47 +788,32 @@ async def login_page(request: Request):
 
 
 @app.post("/login")
-async def login_post(
-    request: Request,
+async def login(
     username: str = Form(...),
     password: str = Form(...),
-    remember: bool = Form(False)
+    remember_me: str = Form(None)
 ):
-    db = SessionLocal()
+    if username not in USERS:
+        return RedirectResponse("/login", status_code=303)
 
-    user = db.query(models.User).filter(
-        models.User.username == username
-    ).first()
+    if not pwd_context.verify(password, USERS[username]):
+        return RedirectResponse("/login", status_code=303)
 
-    db.close()
-
-    if not user or not pwd_context.verify(password, user.password_hash):
-        return templates.TemplateResponse(
-            request=request,
-            name="login.html",
-            context={"error": "Invalid username or password"}
-        )
+    token = create_token(username)
 
     response = RedirectResponse("/", status_code=303)
 
-    if remember:
-        response.set_cookie(
-            key="user",
-            value=username,
-            max_age=60 * 60 * 24 * 30,
-            httponly=True,
-            path="/"
-        )
-    else:
-        response.set_cookie(
-            key="user",
-            value=username,
-            httponly=True,
-            path="/"
-        )
+    response.set_cookie(
+        key="token",
+        value=token,
+        httponly=True,
+        secure=True,   # helyi fejlesztéshez
+        samesite="lax",
+        path="/",
+        max_age=60*60*24*30 if remember_me else None
+    )
 
     return response
-
 
 @app.get("/logout")
 async def logout():
