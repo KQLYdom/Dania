@@ -667,3 +667,121 @@ text-decoration:line-through;
     background:#2563eb;
     color:white;
 }
+
+/* =========================
+   Mobile (768px alatt)
+========================= */
+
+@media (max-width: 768px) {
+
+    body{
+        font-size:15px;
+    }
+
+    .layout{
+        display:block;
+    }
+
+    /* Sidebar */
+
+    .sidebar{
+        width:100%;
+        height:auto;
+        position:sticky;
+        top:0;
+        z-index:100;
+        padding:16px;
+    }
+
+    .sidebar nav{
+        display:flex;
+        overflow-x:auto;
+        gap:12px;
+        white-space:nowrap;
+        padding-bottom:6px;
+    }
+
+    .sidebar nav a{
+        flex-shrink:0;
+    }
+
+    /* Tartalom */
+
+    .page{
+        padding:16px;
+    }
+
+    header h1{
+        font-size:30px;
+    }
+
+    /* Kártyák */
+
+    .summary-grid,
+    .content-grid{
+        display:grid;
+        grid-template-columns:1fr;
+        gap:16px;
+    }
+
+    .card{
+        padding:18px;
+    }
+
+    .card-wide{
+        grid-column:auto;
+    }
+
+    /* Chart */
+
+    .chart-container{
+        height:260px;
+    }
+
+    /* Trend gombok */
+
+    .trend-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:14px;
+    }
+
+    .trend-switch{
+        width:100%;
+        display:flex;
+        justify-content:space-between;
+    }
+
+    .trend-btn{
+        flex:1;
+    }
+
+    /* Formok */
+
+    input,
+    select,
+    textarea,
+    button{
+        width:100%;
+    }
+
+    form{
+        gap:12px;
+    }
+
+    /* Budget */
+
+    .budget-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+    }
+
+    /* Upcoming payments */
+
+    .upcoming-payment{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+    }
+}
