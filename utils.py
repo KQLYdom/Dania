@@ -15,7 +15,7 @@ def get_current_user(request):
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload.get("username")
+        return payload.get("sub")
     except JWTError:
         return None
 
