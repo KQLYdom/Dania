@@ -2,163 +2,153 @@
 
 {% block content %}
 
-<header>
-    <h1>🏠 Home Manager</h1>
-    <p>Our household dashboard</p>
+<header class="page-hero">
+    <div>
+        <p class="page-kicker">Overview</p>
+        <h1>Dashboard</h1>
+        <p>Income, spending and what’s next for the household.</p>
+    </div>
+    <div class="hero-actions">
+        <a href="/money" class="hero-link">Add money</a>
+        <a href="/payments" class="hero-link ghost">Payments</a>
+    </div>
 </header>
 
-<main>
+<main class="dashboard">
 
-<!-- SUMMARY -->
+<section class="kpi-grid">
 
-<section class="summary-grid">
+    <article class="kpi-card kpi-income">
+        <span class="kpi-icon" aria-hidden="true">↑</span>
+        <div>
+            <h3>Income</h3>
+            <p class="big">{{ "%.2f"|format(total_income) }} <span class="currency">kr</span></p>
+            <span class="kpi-meta">{{ income_count }} income {{ "entry" if income_count == 1 else "entries" }}</span>
+        </div>
+    </article>
 
-    <div class="card" style="grid-column: span 2;">
-        <h3>💰 Income</h3>
-        <p class="big">{{ "%.2f"|format(total_income) }} kr</p>
-        <span>{{ income_count }} income entries</span>
-    </div>
+    <article class="kpi-card kpi-expense">
+        <span class="kpi-icon" aria-hidden="true">↓</span>
+        <div>
+            <h3>Expenses</h3>
+            <p class="big">{{ "%.2f"|format(total_expenses) }} <span class="currency">kr</span></p>
+            <span class="kpi-meta">All recorded spending</span>
+        </div>
+    </article>
 
-    <div class="card">
-        <h3>💸 Expenses</h3>
-        <p class="big">{{ "%.2f"|format(total_expenses) }} kr</p>
-        <span>This month</span>
-    </div>
-
-    <div class="card">
-        <h3>📈 Current Balance</h3>
-        <p class="big">{{ "%.2f"|format(current_balance) }} kr</p>
-        <span>Income − Expenses</span>
-    </div>
+    <article class="kpi-card kpi-balance {% if current_balance < 0 %}is-negative{% endif %}">
+        <span class="kpi-icon" aria-hidden="true">=</span>
+        <div>
+            <h3>Current balance</h3>
+            <p class="big">{{ "%.2f"|format(current_balance) }} <span class="currency">kr</span></p>
+            <span class="kpi-meta">Starting balance + income − expenses</span>
+        </div>
+    </article>
 
 </section>
 
-<!-- MONTHLY BUDGET -->
+<section class="card budget-card">
 
-<section class="card">
+    <div class="section-heading">
+        <div>
+            <h2>Monthly budget</h2>
+            <p class="section-sub">How much of each category is already used.</p>
+        </div>
+        <a href="/settings" class="edit-btn">Edit budgets</a>
+    </div>
 
-    <h2>📊 Monthly Budget</h2>
+    {% if budget_data %}
+    <div class="budget-list">
+        {% for item in budget_data %}
+        <div class="budget-item">
+            <div class="budget-header">
+                <div class="budget-name">
+                    <span class="budget-dot progress-{{ item.color }}"></span>
+                    <strong>{{ item.name }}</strong>
+                </div>
+                <div class="budget-figures">
+                    <strong>{{ "%.0f"|format(item.spent) }} / {{ "%.0f"|format(item.budget) }} kr</strong>
+                    <small>{{ "%.0f"|format(item.percent) }}%</small>
+                </div>
+            </div>
 
-    {% for item in budget_data %}
+            <div class="progress">
+                <div
+                    class="progress-fill progress-{{ item.color }}"
+                    data-percent="{{ item.percent }}">
+                </div>
+            </div>
 
-    <div class="budget-item">
-
-        <div class="budget-header">
-
-            <div>
-
-                {% if item.name == "Housing" %}
-                    🏠
-                {% elif item.name == "Internet" %}
-                    🌐
-                {% elif item.name == "Food" %}
-                    🍔
-                {% elif item.name == "Transport" %}
-                    🚗
+            <small class="budget-status {% if item.over_budget %}is-over{% endif %}">
+                {% if item.budget == 0 %}
+                    No budget set
+                {% elif item.over_budget %}
+                    Over budget by {{ "%.0f"|format(-item.remaining) }} kr
                 {% else %}
-                    📦
+                    {{ "%.0f"|format(item.remaining) }} kr left
                 {% endif %}
-
-                <strong>{{ item.name }}</strong>
-
-            </div>
-
-            <div style="text-align:right;">
-                <strong>
-                    {{ "%.0f"|format(item.spent) }}/{{ "%.0f"|format(item.budget) }} kr
-                </strong>
-                <br>
-                <small>{{ "%.0f"|format(item.percent) }}%</small>
-            </div>
-
+            </small>
         </div>
-
-        <div class="progress">
-            <div
-                class="progress-fill progress-{{ item.color }}"
-                data-percent="{{ item.percent }}">
-            </div>
-        </div>
-
-        <small>
-
-            {% if item.budget == 0 %}
-                No budget set
-            {% elif item.over_budget %}
-                🔴 Over budget by {{ "%.0f"|format(-item.remaining) }} kr
-            {% else %}
-                {{ "%.0f"|format(item.remaining) }} kr left
-            {% endif %}
-
-        </small>
-
+        {% endfor %}
     </div>
-
-    {% endfor %}
+    {% else %}
+        <p class="empty-note">No categories yet. Add them in Settings.</p>
+    {% endif %}
 
 </section>
-
-<!-- ANALYTICS -->
 
 <section class="content-grid">
 
-    <!-- Spending by Category -->
-
-    <div class="card card-wide">
-
-        <h2>🍩 Spending by Category</h2>
-
+    <div class="card card-wide chart-card">
+        <div class="section-heading">
+            <div>
+                <h2>Spending by category</h2>
+                <p class="section-sub">Where the money went.</p>
+            </div>
+        </div>
         <div class="chart-container">
             <canvas id="categoryChart"></canvas>
         </div>
-
     </div>
 
-    <!-- Stats -->
-
-    <div class="summary-grid dashboard-stats">
-
-        <div class="card">
-            <h3>🏆 Biggest Expense</h3>
-
+    <div class="kpi-grid dashboard-stats">
+        <article class="kpi-card compact">
+            <h3>Biggest expense</h3>
             {% if biggest_expense %}
-                <p class="big">{{ "%.0f"|format(biggest_expense.amount) }} kr</p>
-                <span>{{ biggest_expense.name }}</span>
+                <p class="big">{{ "%.0f"|format(biggest_expense.amount) }} <span class="currency">kr</span></p>
+                <span class="kpi-meta">{{ biggest_expense.name }}</span>
             {% else %}
-                <p class="big">0 kr</p>
-                <span>No expenses yet</span>
+                <p class="big">0 <span class="currency">kr</span></p>
+                <span class="kpi-meta">No expenses yet</span>
             {% endif %}
-        </div>
+        </article>
 
-        <div class="card">
-            <h3>💳 Daily Average</h3>
-            <p class="big">{{ "%.0f"|format(daily_average) }} kr</p>
-            <span>Average per day</span>
-        </div>
+        <article class="kpi-card compact">
+            <h3>Daily average</h3>
+            <p class="big">{{ "%.0f"|format(daily_average) }} <span class="currency">kr</span></p>
+            <span class="kpi-meta">Across this month</span>
+        </article>
 
-        <div class="card">
-            <h3>📅 Transactions</h3>
+        <article class="kpi-card compact">
+            <h3>Transactions</h3>
             <p class="big">{{ transactions_this_month }}</p>
-            <span>This month</span>
-        </div>
+            <span class="kpi-meta">Income and expenses</span>
+        </article>
 
-        <div class="card">
-            <h3>🐷 Savings Rate</h3>
-            <p class="big">{{ "%.0f"|format(savings_rate) }}%</p>
-            <span>Income kept</span>
-        </div>
-
+        <article class="kpi-card compact">
+            <h3>Savings rate</h3>
+            <p class="big">{{ "%.0f"|format(savings_rate) }}<span class="currency">%</span></p>
+            <span class="kpi-meta">Share of income kept</span>
+        </article>
     </div>
 
-    <!-- Spending Trend -->
-
-    <div class="card card-wide">
-
+    <div class="card card-wide chart-card">
         <div class="trend-header">
-
-            <h2>📈 Spending Trend</h2>
-
-            <div class="trend-switch">
+            <div>
+                <h2>Spending trend</h2>
+                <p class="section-sub">Pick a range to see how spending moves.</p>
+            </div>
+            <div class="trend-switch" role="tablist" aria-label="Trend range">
                 <button type="button" class="trend-btn active" data-range="month">M</button>
                 <button type="button" class="trend-btn" data-range="week">W</button>
                 <button type="button" class="trend-btn" data-range="day">D</button>
@@ -166,85 +156,66 @@
                 <button type="button" class="trend-btn" data-range="6m">6M</button>
                 <button type="button" class="trend-btn" data-range="year">Y</button>
             </div>
-
         </div>
-
         <div class="chart-container">
             <canvas id="trendChart"></canvas>
         </div>
-
     </div>
 
-    <!-- Shopping -->
-
-    <div class="card">
-
-        <h2>🛒 Shopping List</h2>
+    <div class="card list-card">
+        <div class="section-heading">
+            <div>
+                <h2>Shopping list</h2>
+                <p class="section-sub">Open items</p>
+            </div>
+        </div>
 
         {% if shopping_items %}
-
-            <ul class="shopping-list">
-
+            <ul class="shopping-list dashboard-shopping">
                 {% for item in shopping_items %}
-                    <li>• {{ item.name }}</li>
+                    <li>
+                        <span class="item-dot"></span>
+                        <span>{{ item.name }}</span>
+                    </li>
                 {% endfor %}
-
             </ul>
-
-            <a href="/shopping" class="edit-btn">View all →</a>
-
+            <a href="/shopping" class="edit-btn">View all</a>
         {% else %}
-
-            <p>Everything bought 🎉</p>
+            <p class="empty-note">Everything is bought.</p>
             <a href="/shopping" class="edit-btn">Open shopping list</a>
-
         {% endif %}
-
     </div>
 
-    <!-- Upcoming Payments -->
-
-    <div class="card upcoming-card">
-
-        <h2>📅 Upcoming Payments</h2>
+    <div class="card upcoming-card list-card">
+        <div class="section-heading">
+            <div>
+                <h2>Upcoming payments</h2>
+                <p class="section-sub">Next due dates</p>
+            </div>
+        </div>
 
         {% if upcoming_payments %}
-
             {% for payment in upcoming_payments %}
-
             <div class="upcoming-payment">
-
                 <div class="payment-left">
                     <strong>{{ payment.name }}</strong>
                     <small>{{ payment.due_date }}</small>
                 </div>
-
                 <div class="payment-right">
-
                     <strong>{{ "%.0f"|format(payment.amount) }} kr</strong>
-
                     {% if payment.days_left == 0 %}
                         <small class="today">Today</small>
-
                     {% elif payment.days_left == 1 %}
                         <small class="tomorrow">Tomorrow</small>
-
                     {% else %}
                         <small>{{ payment.days_left }} days</small>
                     {% endif %}
-
                 </div>
-
             </div>
-
             {% endfor %}
-
         {% else %}
-
-            <p>No upcoming payments.</p>
-
+            <p class="empty-note">No upcoming payments.</p>
         {% endif %}
-
     </div>
 
 </section>
@@ -274,16 +245,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     "#0EA5E9",
                     "#EC4899"
                 ],
-                borderWidth: 0
+                borderWidth: 3,
+                borderColor: "#ffffff",
+                hoverOffset: 6
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            cutout: "55%",
+            cutout: "62%",
             plugins: {
                 legend: {
-                    position: "bottom"
+                    position: "bottom",
+                    labels: {
+                        boxWidth: 12,
+                        padding: 16,
+                        usePointStyle: true,
+                        pointStyle: "circle",
+                        font: { size: 13, family: "Inter, Segoe UI, sans-serif" }
+                    }
                 }
             }
         }
@@ -331,20 +311,31 @@ document.addEventListener("DOMContentLoaded", () => {
                 label: "Spending",
                 data: datasets.month.values,
                 borderColor: "#2563EB",
-                backgroundColor: "rgba(37,99,235,0.15)",
+                backgroundColor: "rgba(37,99,235,0.12)",
                 fill: true,
-                tension: 0.35
+                tension: 0.35,
+                pointRadius: 0,
+                pointHoverRadius: 5,
+                borderWidth: 2.5
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: { intersect: false, mode: "index" },
             plugins: {
                 legend: { display: false }
             },
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    grid: { color: "#eef2f7" },
+                    ticks: { color: "#6b7280" },
+                    border: { display: false }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: "#6b7280", maxRotation: 0, autoSkip: true, maxTicksLimit: 8 }
                 }
             }
         }

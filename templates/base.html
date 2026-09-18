@@ -9,6 +9,9 @@
     <link rel="manifest" href="/static/manifest.json">
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -31,13 +34,14 @@
         </div>
 
         <nav>
-            <a href="/">🏠 Dashboard</a>
-            <a href="/money">💰 Money</a>
-            <a href="/utilities">⚡ Utilities</a>
-            <a href="/shopping">🛒 Shopping</a>
-            <a href="/payments">📅 Upcoming Payments</a>
-            <a href="/todo">✅ To-do</a>
-            <a href="/settings">⚙️ Settings</a>
+            {% set path = request.url.path %}
+            <a href="/" class="{% if path == '/' %}active{% endif %}">🏠 Dashboard</a>
+            <a href="/money" class="{% if path.startswith('/money') %}active{% endif %}">💰 Money</a>
+            <a href="/utilities" class="{% if path.startswith('/utilities') %}active{% endif %}">⚡ Utilities</a>
+            <a href="/shopping" class="{% if path.startswith('/shopping') %}active{% endif %}">🛒 Shopping</a>
+            <a href="/payments" class="{% if path.startswith('/payments') %}active{% endif %}">📅 Upcoming Payments</a>
+            <a href="/todo" class="{% if path.startswith('/todo') %}active{% endif %}">✅ To-do</a>
+            <a href="/settings" class="{% if path.startswith('/settings') %}active{% endif %}">⚙️ Settings</a>
             <a href="/logout">🚪 Logout</a>
         </nav>
 
