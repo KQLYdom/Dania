@@ -1150,8 +1150,14 @@ text-decoration:line-through;
     .back-to-top{
         bottom:18px;
         right:18px;
-        padding:14px 18px;
-        font-size:14px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        width:auto;
+        min-width:52px;
+        padding:11px 14px;
+        font-size:13px;
+        line-height:1;
     }
 }
 
