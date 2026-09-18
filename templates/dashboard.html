@@ -291,4 +291,78 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const ctx = document.getElementById("trendChart");
+    if (!ctx) return;
+
+    const datasets = {
+        day: {
+            labels: {{ trend_day_labels|tojson }},
+            values: {{ trend_day_values|tojson }}
+        },
+        week: {
+            labels: {{ trend_week_labels|tojson }},
+            values: {{ trend_week_values|tojson }}
+        },
+        month: {
+            labels: {{ trend_month_labels|tojson }},
+            values: {{ trend_month_values|tojson }}
+        },
+        "3m": {
+            labels: {{ trend_3m_labels|tojson }},
+            values: {{ trend_3m_values|tojson }}
+        },
+        "6m": {
+            labels: {{ trend_6m_labels|tojson }},
+            values: {{ trend_6m_values|tojson }}
+        },
+        year: {
+            labels: {{ trend_year_labels|tojson }},
+            values: {{ trend_year_values|tojson }}
+        }
+    };
+
+    const chart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: datasets.month.labels,
+            datasets: [{
+                label: "Spending",
+                data: datasets.month.values,
+                borderColor: "#2563EB",
+                backgroundColor: "rgba(37,99,235,0.15)",
+                fill: true,
+                tension: 0.35
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    document.querySelectorAll(".trend-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".trend-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            const range = btn.dataset.range;
+
+            chart.data.labels = datasets[range].labels;
+            chart.data.datasets[0].data = datasets[range].values;
+            chart.update();
+        });
+    });
+});
+</script>
+
 {% endblock %}

@@ -104,7 +104,7 @@ async def home(request: Request):
             + expense.amount
         )
 
-        category_labels = list(category_totals.keys())
+    category_labels = list(category_totals.keys())
     category_values = list(category_totals.values())
 
     if not category_labels:
@@ -212,6 +212,9 @@ async def home(request: Request):
     trend_year_labels = list(year_data.keys())
     trend_year_values = list(year_data.values())
 
+    trend_labels = trend_month_labels
+    trend_values = trend_month_values
+
     return templates.TemplateResponse(
         request=request,
         name="dashboard.html",
@@ -233,6 +236,9 @@ async def home(request: Request):
             "category_values": category_values,
             "shopping_items": shopping_items,
             "upcoming_payments": upcoming_payments,
+
+            "trend_labels": trend_labels,
+            "trend_values": trend_values,
 
             "trend_day_labels": trend_day_labels,
             "trend_day_values": trend_day_values,
