@@ -252,67 +252,41 @@
 </main>
 
 <script>
-const trendData = {
-    day:{
-        labels:{{ trend_day_labels|tojson|safe }},
-        values:{{ trend_day_values|tojson|safe }}
-    },
-    week:{
-        labels:{{ trend_week_labels|tojson|safe }},
-        values:{{ trend_week_values|tojson|safe }}
-    },
-    month:{
-        labels:{{ trend_month_labels|tojson|safe }},
-        values:{{ trend_month_values|tojson|safe }}
-    },
-    "3m":{
-        labels:{{ trend_3m_labels|tojson|safe }},
-        values:{{ trend_3m_values|tojson|safe }}
-    },
-    "6m":{
-        labels:{{ trend_6m_labels|tojson|safe }},
-        values:{{ trend_6m_values|tojson|safe }}
-    },
-    year:{
-        labels:{{ trend_year_labels|tojson|safe }},
-        values:{{ trend_year_values|tojson|safe }}
-    }
-};
+document.addEventListener("DOMContentLoaded", () => {
+    const canvas = document.getElementById("categoryChart");
+    if (!canvas) return;
 
-const trendCtx=document.getElementById("trendChart");
+    const labels = {{ category_labels | tojson }};
+    const values = {{ category_values | tojson }};
 
-const trendChart=new Chart(trendCtx,{
-    type:"line",
-    data:{
-        labels:trendData.month.labels,
-        datasets:[{
-            data:trendData.month.values,
-            tension:.4,
-            fill:true,
-            borderColor:"#2563EB",
-            backgroundColor:"rgba(37,99,235,.15)",
-            pointRadius:3
-        }]
-    },
-    options:{
-        responsive:true,
-        maintainAspectRatio:false,
-        plugins:{legend:{display:false}}
-    }
-});
-
-document.querySelectorAll(".trend-btn").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-
-        document.querySelectorAll(".trend-btn").forEach(b=>b.classList.remove("active"));
-        btn.classList.add("active");
-
-        const range=btn.dataset.range;
-        const d=trendData[range];
-
-        trendChart.data.labels=d.labels;
-        trendChart.data.datasets[0].data=d.values;
-        trendChart.update();
+    new Chart(canvas, {
+        type: "doughnut",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: [
+                    "#2563EB",
+                    "#16A34A",
+                    "#F59E0B",
+                    "#DC2626",
+                    "#8B5CF6",
+                    "#0EA5E9",
+                    "#EC4899"
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "55%",
+            plugins: {
+                legend: {
+                    position: "bottom"
+                }
+            }
+        }
     });
 });
 </script>
