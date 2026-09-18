@@ -18,10 +18,10 @@ body{
 }
 
 .sidebar{
-    width:240px;
+    width:270px;
     background:#111827;
     color:white;
-    padding:30px 20px;
+    padding:28px 22px;
     position:sticky;
     top:0;
     height:100vh;
@@ -29,6 +29,9 @@ body{
 
 .sidebar h2{
     margin-bottom:35px;
+    font-size:23px;
+    line-height:1.2;
+    white-space:nowrap;
 }
 
 .sidebar nav{
@@ -1013,6 +1016,10 @@ text-decoration:line-through;
         display:block;
     }
 
+    body{
+        padding:0;
+    }
+
     .page{
         padding-top:70px;
     }
@@ -1057,10 +1064,17 @@ text-decoration:line-through;
     }
 
     .close-sidebar{
-        display:block;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        width:42px;
+        height:42px;
+        padding:0;
         border:none;
-        background:transparent;
-        font-size:24px;
+        border-radius:12px;
+        background:#2563eb;
+        color:white;
+        font-size:22px;
         cursor:pointer;
     }
 
@@ -1084,5 +1098,33 @@ text-decoration:line-through;
         right:18px;
         padding:14px 18px;
         font-size:14px;
+    }
+}
+
+/* A desktop nézetet ezek a szabályok védenek a mobil menü stílusaitól.
+   Így laptopon mindig a teljes oldalsáv látszik, a hamburger csak telefonon. */
+@media (min-width:769px){
+    .menu-toggle,
+    .close-sidebar,
+    .sidebar-overlay{
+        display:none !important;
+    }
+
+    .layout{
+        display:flex;
+    }
+
+    .sidebar{
+        position:sticky;
+        left:auto;
+        top:0;
+        width:270px;
+        height:100vh;
+        padding:28px 22px;
+        overflow-y:auto;
+    }
+
+    .page{
+        padding:35px;
     }
 }
