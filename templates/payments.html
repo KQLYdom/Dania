@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<header>
+    <h1>📅 Recurring Payments</h1>
+    <p>Automatic monthly bills</p>
+</header>
+
+<main>
+
+    <!-- Add Payment -->
+
+    <section class="card">
+
+        <h2>➕ Add Payment</h2>
+
+        <form action="/payments/add" method="post">
+
+            <label>Name</label>
+            <input type="text" name="name" placeholder="Netflix" required>
+
+            <label>Amount (DKK)</label>
+            <input type="number" step="0.01" name="amount" required>
+
+            <label>Paid by</label>
+            <select name="person_id">
+                {% for person in people %}
+                    <option value="{{ person.id }}">{{ person.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Category</label>
+            <select name="category_id">
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Due date</label>
+            <input type="date" name="due_date" required>
+
+            <label>Notes</label>
+            <input type="text" name="notes" placeholder="Optional">
+
+            <button type="submit">Add Payment</button>
+
+        </form>
+
+    </section>
+
+    <!-- Payment List -->
+
+    <section class="card">
+
+        <h2>Upcoming Payments</h2>
+
+        {% if payments %}
+
+            {% for payment in payments %}
+
+                <div class="expense-row">
+
+                    <div class="expense-info">
+
+                        <strong>{{ payment.name }}</strong><br>
+
+                        <small>
+                            Every month on {{ payment.due_date.day }} •
+                            {{ payment.person.name if payment.person else "Unknown" }}
+                        </small>
+
+                    </div>
+
+                    <div class="expense-actions">
+
+                        <div class="expense-actions">
+
+                            <strong>{{ "%.2f"|format(payment.amount) }} kr</strong>
+
+                            <a href="/payments/edit/{{ payment.id }}"
+                            class="edit-btn">
+
+                                ✏️
+
+                            </a>
+
+                            
+
+                        </div>
+
+                        <form action="/payments/delete/{{ payment.id }}" method="post">
+                            <button
+                                class="delete-btn"
+                                onclick="return confirm('Delete this recurring payment?')">
+                                🗑
+                            </button>
+                        </form>
+
+                    </div>
+
+                </div>
+
+                {% if payment.notes %}
+                    <details class="notes-box">
+                        <summary>📝 Notes</summary>
+                        <p>{{ payment.notes }}</p>
+                    </details>
+                {% endif %}
+
+                <hr>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No recurring payments yet.</p>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+{% endblock %}

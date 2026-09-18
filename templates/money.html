@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>💰 Money</h1>
+<p>Your household finances</p>
+
+<section class="summary-grid">
+
+    <div class="card">
+        <h3>Income</h3>
+        <p class="big">{{ "%.2f"|format(total_income) }} kr</p>
+    </div>
+
+    <div class="card">
+        <h3>Expenses</h3>
+        <p class="big">{{ "%.2f"|format(total_expenses) }} kr</p>
+    </div>
+
+    <div class="card">
+        <h3>Current Balance</h3>
+        <p class="big">{{ "%.2f"|format(current_balance) }} kr</p>
+    </div>
+
+</section>
+
+<section class="content-grid">
+
+    <!-- Add Income -->
+
+    <div class="card">
+
+        <h2>➕ Add Income</h2>
+
+        <form action="/income/add" method="post">
+
+            <input type="text"
+                   name="name"
+                   placeholder="Salary, SU..."
+                   required>
+
+            <input type="number"
+                   step="0.01"
+                   name="amount"
+                   placeholder="Amount"
+                   required>
+
+            <select name="person_id">
+
+                {% for person in people %}
+
+                <option value="{{ person.id }}">
+                    {{ person.name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <input type="date"
+                   name="income_date"
+                   required>
+
+            <input type="text"
+                   name="notes"
+                   placeholder="Notes">
+
+            <button>Add Income</button>
+
+        </form>
+
+    </div>
+
+    <!-- Add Expense -->
+
+    <div class="card">
+
+        <h2>➕ Add Expense</h2>
+
+        <form action="/expenses/add" method="post">
+
+            <input type="text"
+                   name="name"
+                   placeholder="Expense"
+                   required>
+
+            <input type="number"
+                   step="0.01"
+                   name="amount"
+                   placeholder="Amount"
+                   required>
+
+            <select name="person_id">
+
+                {% for person in people %}
+
+                <option value="{{ person.id }}">
+                    {{ person.name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <select name="category_id">
+
+                {% for category in categories %}
+
+                <option value="{{ category.id }}">
+                    {{ category.name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <input type="date"
+                   name="expense_date"
+                   required>
+
+            <input type="text"
+                   name="notes"
+                   placeholder="Notes">
+
+            <button>Add Expense</button>
+
+        </form>
+
+    </div>
+
+</section>
+
+<section class="card">
+
+    <h2>Recent Transactions</h2>
+
+    {% if transactions %}
+
+        {% for transaction in transactions %}
+
+        <div class="transaction-row">
+
+            <div>
+
+                <strong>{{ transaction.name }}</strong><br>
+
+                <small>
+                    {{ transaction.date }} • {{ transaction.person }}
+                </small>
+
+            </div>
+
+            <div>
+
+                {% if transaction.type == "income" %}
+
+                    <span class="income-amount">
+                        +{{ "%.2f"|format(transaction.amount) }} kr
+                    </span>
+
+                {% else %}
+
+                    <span class="expense-amount">
+                        -{{ "%.2f"|format(transaction.amount) }} kr
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No transactions yet.</p>
+
+    {% endif %}
+
+</section>
+
+<!-- Expense History -->
+
+<section class="card">
+
+    <h2>💸 Expenses History</h2>
+
+    {% if expenses %}
+
+        {% for expense in expenses|reverse %}
+
+            <div class="expense-row">
+
+                <div class="expense-info">
+
+                    <strong>{{ expense.name }}</strong><br>
+
+                    <small>
+                        {{ expense.date }} •
+                        {{ expense.person.name if expense.person else "Unknown" }}
+                    </small>
+
+                </div>
+
+                <div class="expense-actions">
+
+                    <strong>{{ "%.2f"|format(expense.amount) }} kr</strong>
+
+                    <a href="/expenses/edit/{{ expense.id }}" class="edit-btn">✏️</a>
+
+                    <form action="/expenses/delete/{{ expense.id }}" method="post">
+                        <button
+                            class="delete-btn"
+                            onclick="return confirm('Delete this expense?')">
+                            🗑
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+
+            {% if expense.notes %}
+
+            <details class="notes-box">
+
+                <summary>📝 Notes</summary>
+
+                <p>{{ expense.notes }}</p>
+
+            </details>
+
+            {% endif %}
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No expenses yet.</p>
+
+    {% endif %}
+
+</section>
+
+<!-- Income History -->
+
+<section class="card">
+
+    <h2>💰 Income History</h2>
+
+    {% if incomes %}
+
+        {% for income in incomes|reverse %}
+
+            <div class="expense-row">
+
+                <div class="expense-info">
+
+                    <strong>{{ income.name }}</strong><br>
+
+                    <small>
+                        {{ income.date }} •
+                        {{ income.person.name if income.person else "Unknown" }}
+                    </small>
+
+                </div>
+
+                <div class="expense-actions">
+
+                    <strong>{{ "%.2f"|format(income.amount) }} kr</strong>
+
+                    <a href="/income/edit/{{ income.id }}" class="edit-btn">✏️</a>
+
+                    <form action="/income/delete/{{ income.id }}" method="post">
+                        <button
+                            class="delete-btn"
+                            onclick="return confirm('Delete this income?')">
+                            🗑
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+
+            {% if income.notes %}
+
+            <details class="notes-box">
+
+                <summary>📝 Notes</summary>
+
+                <p>{{ income.notes }}</p>
+
+            </details>
+
+            {% endif %}
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No income yet.</p>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

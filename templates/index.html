@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Manager</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+</head>
+
+<body>
+
+<header>
+    <h1>🏠 Home Manager</h1>
+    <p>Our household dashboard</p>
+</header>
+
+<main>
+
+    <!-- ADD EXPENSE -->
+    <section class="card add-expense">
+
+        <h2>➕ Add Expense</h2>
+
+        <form action="/expenses/add" method="post">
+
+            <label>Name</label>
+            <input type="text" name="name" placeholder="YouSee Internet" required>
+
+            <label>Amount (DKK)</label>
+            <input type="number" name="amount" step="0.01" required>
+
+            <label>Paid by</label>
+            <select name="person_id">
+                {% for person in people %}
+                <option value="{{ person.id }}">{{ person.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Category</label>
+            <select name="category_id">
+                {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Date</label>
+            <input type="date" name="expense_date" required>
+
+            <label>Notes</label>
+            <input type="text" name="notes" placeholder="Optional">
+
+            <button type="submit">Add Expense</button>
+
+        </form>
+
+    </section>
+
+    <!-- EXPENSES -->
+    <section class="card">
+
+        <h2>💸 Expenses</h2>
+
+        <div class="summary-card">
+            <div class="stat">
+                <span>Expenses this month</span>
+                <strong>{{ expense_count }}</strong>
+            </div>
+
+            <div class="stat">
+                <span>Average expense</span>
+                <strong>{{ "%.2f"|format(average_expense) }} kr</strong>
+            </div>
+            <h3>Total Expenses</h3>
+            <h1>{{ "%.2f"|format(total_expenses) }} kr</h1>
+        </div>
+
+        {% if expenses %}
+
+            {% for expense in expenses %}
+
+            <div class="expense-row">
+
+                <div class="expense-info">
+                    <strong>{{ expense.name }}</strong><br>
+                    <small>{{ expense.date }}</small>
+                </div>
+
+                <div class="expense-actions">
+                    <strong>{{ "%.2f"|format(expense.amount) }} kr</strong>
+
+                    <a href="/expenses/edit/{{ expense.id }}" class="edit-btn">
+                        ✏️ Edit
+                    </a>
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No expenses yet.</p>
+
+        {% endif %}
+
+    </section>
+    
+    <section class="card add-income">
+
+    <h2>💰 Add Income</h2>
+
+    <form action="/income/add" method="post">
+
+        <label>Name</label>
+        <input type="text" name="name"
+               placeholder="Salary, SU, Bonus" required>
+
+        <label>Amount (DKK)</label>
+        <input type="number" step="0.01"
+               name="amount" required>
+
+        <label>Received by</label>
+        <select name="person_id">
+            {% for person in people %}
+            <option value="{{ person.id }}">
+                {{ person.name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label>Date</label>
+        <input type="date" name="income_date" required>
+
+        <label>Notes</label>
+        <input type="text" name="notes">
+
+        <button type="submit">Add Income</button>
+
+    </form>
+
+    </section>
+
+    <section class="card">
+
+    <h2>💰 Income History</h2>
+
+    {% if incomes %}
+
+        {% for income in incomes %}
+
+        <div class="expense-row">
+
+            <div class="expense-info">
+                <strong>{{ income.name }}</strong><br>
+                <small>
+                    {{ income.date }} • {{ income.person.name }}
+                </small>
+            </div>
+
+            <strong>{{ "%.2f"|format(income.amount) }} kr</strong>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No income yet.</p>
+
+    {% endif %}
+
+    </section>
+    <!-- SUMMARY -->
+    <section class="summary-grid">
+
+        <div class="card">
+            <h3>💰 Income</h3>
+            <p class="big">{{ "%.2f"|format(total_income) }} kr</p>
+            <span>{{ income_count }} income entries</span>
+        </div>
+
+        <div class="card">
+            <h3>💸 Expenses</h3>
+            <p class="big">{{ "%.2f"|format(total_expenses) }} kr</p>
+            <span>This month</span>
+        </div>
+
+        <div class="card">
+            <h3>📈 Current Balance</h3>
+            <p class="big">{{ "%.2f"|format(current_balance) }} kr</p>
+            <span>Income − Expenses</span>
+        </div>
+
+    </section>
+
+    <!-- CONTENT -->
+    <section class="content-grid">
+
+        <div class="card">
+            <h2>⚡ Electricity</h2>
+
+            <div class="stat">
+                <span>Usage</span>
+                <strong>143 kWh</strong>
+            </div>
+
+            <div class="stat">
+                <span>Average per day</span>
+                <strong>5.1 kWh</strong>
+            </div>
+
+            <div class="stat">
+                <span>Estimated monthly</span>
+                <strong>156 kWh</strong>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🛒 Shopping list</h2>
+
+            <ul class="shopping-list">
+                <li>🥛 Milk</li>
+                <li>🍗 Chicken</li>
+                <li>🥚 Eggs</li>
+                <li>🧻 Toilet paper</li>
+            </ul>
+
+            <button>Add item</button>
+        </div>
+
+        <div class="card">
+            <h2>📅 Upcoming payments</h2>
+
+            <div class="payment">
+                <span>Sep 20</span>
+                <strong>Internet</strong>
+                <span>349 kr</span>
+            </div>
+
+            <div class="payment">
+                <span>Oct 01</span>
+                <strong>Rent</strong>
+                <span>5,900 kr</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚖️ Balance</h2>
+
+            <div class="stat">
+                <span>You paid</span>
+                <strong>4,320 kr</strong>
+            </div>
+
+            <div class="stat">
+                <span>Girlfriend paid</span>
+                <strong>3,870 kr</strong>
+            </div>
+
+            <hr>
+
+            <div class="stat">
+                <span>Difference</span>
+                <strong>225 kr</strong>
+            </div>
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

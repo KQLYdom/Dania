@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Manager</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', path='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <h2>🏠 Home Manager</h2>
+
+        <nav>
+            <a href="/">🏠 Dashboard</a>
+            <a href="/money">💰 Money</a>
+            <a href="/utilities">⚡ Utilities</a>
+            <a href="/shopping">🛒 Shopping</a>
+            <a href="/payments">📅 Upcoming Payments</a>
+            <a href="/todo">✅ To-do</a>
+            <a href="/settings">⚙️ Settings</a>
+            <a href="/logout">🚪 Logout</a>
+            
+        </nav>
+
+    </aside>
+
+    <div class="page">
+        {% block content %}{% endblock %}
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </div>
+
+</div>
+
+<script>
+document.querySelectorAll(".progress-fill").forEach(bar => {
+    const percent = Number(bar.dataset.percent || 0);
+    bar.style.width = percent + "%";
+});
+</script>
+
+</body>
+</html>

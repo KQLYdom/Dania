@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<header>
+    <h1>🛒 Shopping List</h1>
+    <p>Shared grocery list</p>
+</header>
+
+<main>
+
+<div class="card">
+
+    <h2>Add item</h2>
+
+    <form action="/shopping/add" method="post" style="display:flex;gap:12px;align-items:center;">
+
+        <input
+            type="text"
+            name="name"
+            placeholder="Milk, Bread, Chicken..."
+            required
+        >
+
+        <button type="submit">➕ Add</button>
+
+    </form>
+
+</div>
+
+<div class="card" style="margin-top:24px;">
+
+    <h2>Shopping Items</h2>
+
+    {% if items %}
+
+        {% for item in items %}
+
+        <div class="todo-row {% if item.completed %}completed-task{% endif %}">
+
+            <div>
+
+                <strong>{{ item.name }}</strong>
+
+                <br>
+
+                <small>
+                    Added by {{ item.added_by }}
+                </small>
+
+            </div>
+
+            <div class="todo-actions">
+
+                <form action="/shopping/toggle/{{ item.id }}" method="post">
+
+                    <button class="check-btn" type="submit">
+
+                        {% if item.completed %}
+                            ↩
+                        {% else %}
+                            ✓
+                        {% endif %}
+
+                    </button>
+
+                </form>
+
+                <form action="/shopping/delete/{{ item.id }}" method="post">
+
+                    <button class="delete-btn" type="submit">
+                        🗑
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No items yet.</p>
+
+    {% endif %}
+
+</div>
+
+</main>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<header>
+    <h1>⚙️ Settings</h1>
+    <p>Manage your household settings</p>
+</header>
+
+<main>
+
+    <!-- Current Balance -->
+
+    <div class="card">
+
+        <h2>💰 Current Balance</h2>
+
+        <form action="/settings/balance" method="post">
+
+            <label>Starting Balance</label>
+
+            <input
+                type="number"
+                step="0.01"
+                name="amount"
+                value="{{ starting_balance }}"
+            >
+
+            <button type="submit">Save Balance</button>
+
+        </form>
+
+    </div>
+
+    <br>
+
+    <!-- Monthly Budget -->
+
+    <div class="card">
+
+        <h2>📊 Monthly Budget Categories</h2>
+
+        {% for category in categories %}
+
+        <form action="/settings/category/{{ category.id }}" method="post" class="budget-setting">
+
+            <input
+                type="text"
+                name="name"
+                value="{{ category.name }}"
+            >
+
+            <input
+                type="number"
+                step="0.01"
+                name="budget"
+                value="{{ category.budget }}"
+            >
+
+            <button type="submit">Save</button>
+
+        </form>
+
+        {% endfor %}
+
+    </div>
+
+</main>
+
+{% endblock %}

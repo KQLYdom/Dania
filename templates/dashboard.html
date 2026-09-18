@@ -1,0 +1,320 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<header>
+    <h1>🏠 Home Manager</h1>
+    <p>Our household dashboard</p>
+</header>
+
+<main>
+
+<!-- SUMMARY -->
+
+<section class="summary-grid">
+
+    <div class="card" style="grid-column: span 2;">
+        <h3>💰 Income</h3>
+        <p class="big">{{ "%.2f"|format(total_income) }} kr</p>
+        <span>{{ income_count }} income entries</span>
+    </div>
+
+    <div class="card">
+        <h3>💸 Expenses</h3>
+        <p class="big">{{ "%.2f"|format(total_expenses) }} kr</p>
+        <span>This month</span>
+    </div>
+
+    <div class="card">
+        <h3>📈 Current Balance</h3>
+        <p class="big">{{ "%.2f"|format(current_balance) }} kr</p>
+        <span>Income − Expenses</span>
+    </div>
+
+</section>
+
+<!-- MONTHLY BUDGET -->
+
+<section class="card">
+
+    <h2>📊 Monthly Budget</h2>
+
+    {% for item in budget_data %}
+
+    <div class="budget-item">
+
+        <div class="budget-header">
+
+            <div>
+
+                {% if item.name == "Housing" %}
+                    🏠
+                {% elif item.name == "Internet" %}
+                    🌐
+                {% elif item.name == "Food" %}
+                    🍔
+                {% elif item.name == "Transport" %}
+                    🚗
+                {% else %}
+                    📦
+                {% endif %}
+
+                <strong>{{ item.name }}</strong>
+
+            </div>
+
+            <div style="text-align:right;">
+                <strong>
+                    {{ "%.0f"|format(item.spent) }}/{{ "%.0f"|format(item.budget) }} kr
+                </strong>
+                <br>
+                <small>{{ "%.0f"|format(item.percent) }}%</small>
+            </div>
+
+        </div>
+
+        <div class="progress">
+            <div
+                class="progress-fill progress-{{ item.color }}"
+                data-percent="{{ item.percent }}">
+            </div>
+        </div>
+
+        <small>
+
+            {% if item.budget == 0 %}
+                No budget set
+            {% elif item.over_budget %}
+                🔴 Over budget by {{ "%.0f"|format(-item.remaining) }} kr
+            {% else %}
+                {{ "%.0f"|format(item.remaining) }} kr left
+            {% endif %}
+
+        </small>
+
+    </div>
+
+    {% endfor %}
+
+</section>
+
+<!-- ANALYTICS -->
+
+<section class="content-grid">
+
+    <!-- Spending by Category -->
+
+    <div class="card card-wide">
+
+        <h2>🍩 Spending by Category</h2>
+
+        <div class="chart-container">
+            <canvas id="categoryChart"></canvas>
+        </div>
+
+    </div>
+
+    <!-- Stats -->
+
+    <div class="summary-grid dashboard-stats">
+
+        <div class="card">
+            <h3>🏆 Biggest Expense</h3>
+
+            {% if biggest_expense %}
+                <p class="big">{{ "%.0f"|format(biggest_expense.amount) }} kr</p>
+                <span>{{ biggest_expense.name }}</span>
+            {% else %}
+                <p class="big">0 kr</p>
+                <span>No expenses yet</span>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <h3>💳 Daily Average</h3>
+            <p class="big">{{ "%.0f"|format(daily_average) }} kr</p>
+            <span>Average per day</span>
+        </div>
+
+        <div class="card">
+            <h3>📅 Transactions</h3>
+            <p class="big">{{ transactions_this_month }}</p>
+            <span>This month</span>
+        </div>
+
+        <div class="card">
+            <h3>🐷 Savings Rate</h3>
+            <p class="big">{{ "%.0f"|format(savings_rate) }}%</p>
+            <span>Income kept</span>
+        </div>
+
+    </div>
+
+    <!-- Spending Trend -->
+
+    <div class="card card-wide">
+
+        <div class="trend-header">
+
+            <h2>📈 Spending Trend</h2>
+
+            <div class="trend-switch">
+                <button type="button" class="trend-btn active" data-range="month">M</button>
+                <button type="button" class="trend-btn" data-range="week">W</button>
+                <button type="button" class="trend-btn" data-range="day">D</button>
+                <button type="button" class="trend-btn" data-range="3m">3M</button>
+                <button type="button" class="trend-btn" data-range="6m">6M</button>
+                <button type="button" class="trend-btn" data-range="year">Y</button>
+            </div>
+
+        </div>
+
+        <div class="chart-container">
+            <canvas id="trendChart"></canvas>
+        </div>
+
+    </div>
+
+    <!-- Shopping -->
+
+    <div class="card">
+
+        <h2>🛒 Shopping List</h2>
+
+        {% if shopping_items %}
+
+            <ul class="shopping-list">
+
+                {% for item in shopping_items %}
+                    <li>• {{ item.name }}</li>
+                {% endfor %}
+
+            </ul>
+
+            <a href="/shopping" class="edit-btn">View all →</a>
+
+        {% else %}
+
+            <p>Everything bought 🎉</p>
+            <a href="/shopping" class="edit-btn">Open shopping list</a>
+
+        {% endif %}
+
+    </div>
+
+    <!-- Upcoming Payments -->
+
+    <div class="card upcoming-card">
+
+        <h2>📅 Upcoming Payments</h2>
+
+        {% if upcoming_payments %}
+
+            {% for payment in upcoming_payments %}
+
+            <div class="upcoming-payment">
+
+                <div class="payment-left">
+                    <strong>{{ payment.name }}</strong>
+                    <small>{{ payment.due_date }}</small>
+                </div>
+
+                <div class="payment-right">
+
+                    <strong>{{ "%.0f"|format(payment.amount) }} kr</strong>
+
+                    {% if payment.days_left == 0 %}
+                        <small class="today">Today</small>
+
+                    {% elif payment.days_left == 1 %}
+                        <small class="tomorrow">Tomorrow</small>
+
+                    {% else %}
+                        <small>{{ payment.days_left }} days</small>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No upcoming payments.</p>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+</main>
+
+<script>
+const trendData = {
+    day:{
+        labels:{{ trend_day_labels|tojson|safe }},
+        values:{{ trend_day_values|tojson|safe }}
+    },
+    week:{
+        labels:{{ trend_week_labels|tojson|safe }},
+        values:{{ trend_week_values|tojson|safe }}
+    },
+    month:{
+        labels:{{ trend_month_labels|tojson|safe }},
+        values:{{ trend_month_values|tojson|safe }}
+    },
+    "3m":{
+        labels:{{ trend_3m_labels|tojson|safe }},
+        values:{{ trend_3m_values|tojson|safe }}
+    },
+    "6m":{
+        labels:{{ trend_6m_labels|tojson|safe }},
+        values:{{ trend_6m_values|tojson|safe }}
+    },
+    year:{
+        labels:{{ trend_year_labels|tojson|safe }},
+        values:{{ trend_year_values|tojson|safe }}
+    }
+};
+
+const trendCtx=document.getElementById("trendChart");
+
+const trendChart=new Chart(trendCtx,{
+    type:"line",
+    data:{
+        labels:trendData.month.labels,
+        datasets:[{
+            data:trendData.month.values,
+            tension:.4,
+            fill:true,
+            borderColor:"#2563EB",
+            backgroundColor:"rgba(37,99,235,.15)",
+            pointRadius:3
+        }]
+    },
+    options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{legend:{display:false}}
+    }
+});
+
+document.querySelectorAll(".trend-btn").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+
+        document.querySelectorAll(".trend-btn").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const range=btn.dataset.range;
+        const d=trendData[range];
+
+        trendChart.data.labels=d.labels;
+        trendChart.data.datasets[0].data=d.values;
+        trendChart.update();
+    });
+});
+</script>
+
+{% endblock %}

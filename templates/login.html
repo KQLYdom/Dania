@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', path='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="login-page">
+
+<div class="login-card">
+
+<h1>🏠 Home Manager</h1>
+
+<p>Sign in to continue</p>
+
+<form action="/login" method="post">
+
+<label>User</label>
+
+<select name="username">
+
+<option>Fanni</option>
+<option>István</option>
+
+</select>
+
+<label>Password</label>
+
+<input type="password" name="password" required>
+
+<label class="remember">
+
+<input type="checkbox" name="remember" checked>
+
+Remember me
+
+</label>
+
+<button type="submit">Log in</button>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

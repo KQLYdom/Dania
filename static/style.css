@@ -1,0 +1,669 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Inter,Segoe UI,sans-serif;
+    background:#f5f7fb;
+    color:#1f2937;
+}
+
+/* ---------- Layout ---------- */
+
+.layout{
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:240px;
+    background:#111827;
+    color:white;
+    padding:30px 20px;
+    position:sticky;
+    top:0;
+    height:100vh;
+}
+
+.sidebar h2{
+    margin-bottom:35px;
+}
+
+.sidebar nav{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.sidebar a{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    color:#d1d5db;
+    text-decoration:none;
+
+    padding:12px;
+    border-radius:12px;
+
+    font-size:17px;
+    white-space:nowrap;
+}
+
+.sidebar a:hover{
+    background:#1f2937;
+    color:white;
+}
+
+.page{
+    flex:1;
+    padding:35px;
+}
+
+header{
+    background:white;
+    padding:24px 40px;
+    border-radius:20px;
+    margin-bottom:24px;
+    box-shadow:0 10px 30px rgba(0,0,0,.05);
+}
+
+header h1{
+    font-size:34px;
+}
+
+header p{
+    color:#6b7280;
+    margin-top:6px;
+}
+
+main{
+    max-width:1200px;
+    margin:auto;
+}
+
+/* ---------- Cards ---------- */
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin:30px 0;
+}
+
+.content-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:24px;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    padding:24px;
+    box-shadow:0 10px 30px rgba(0,0,0,.05);
+}
+
+.card h2{
+    margin-bottom:18px;
+}
+
+.big{
+    font-size:36px;
+    font-weight:700;
+}
+
+.summary-card{
+    background:#eef4ff;
+    border-radius:16px;
+    padding:18px;
+    margin-bottom:20px;
+}
+
+.summary-card h1{
+    margin-top:8px;
+    color:#2563eb;
+}
+
+/* ---------- Forms ---------- */
+
+form{
+    display:grid;
+    gap:12px;
+}
+
+input,select{
+    width:100%;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+    font-size:15px;
+}
+
+button{
+    border:none;
+    border-radius:12px;
+    padding:12px;
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+    transition:.2s;
+    font-weight:600;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+/* ---------- Expenses ---------- */
+
+.expense-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:16px 0;
+    border-bottom:1px solid #eef2f7;
+}
+
+.expense-row:last-child{
+    border-bottom:none;
+}
+
+.expense-info small{
+    color:#6b7280;
+}
+
+.expense-actions{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+
+.edit-btn{
+    text-decoration:none;
+    color:#2563eb;
+    font-weight:600;
+}
+
+/* ---------- Transactions ---------- */
+
+.transaction-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:16px 0;
+    border-bottom:1px solid #eef2f7;
+}
+
+.transaction-row:last-child{
+    border-bottom:none;
+}
+
+.income-amount{
+    color:#16a34a;
+    font-weight:700;
+}
+
+.expense-amount{
+    color:#dc2626;
+    font-weight:700;
+}
+
+/* ---------- Stats ---------- */
+
+.stat,
+.payment{
+    display:flex;
+    justify-content:space-between;
+    padding:12px 0;
+}
+
+/* ---------- Shopping ---------- */
+
+.shopping-list{
+    list-style:none;
+}
+
+.shopping-list li{
+    padding:10px 0;
+}
+
+hr{
+    margin:16px 0;
+    border:none;
+    border-top:1px solid #e5e7eb;
+}
+
+/* ---------- Monthly Budget ---------- */
+
+.budget-item{
+    margin-bottom:22px;
+}
+
+.budget-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.progress{
+    height:12px;
+    background:#e5e7eb;
+    border-radius:999px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+    border-radius:999px;
+    transition:width .5s ease;
+}
+
+.progress-green{
+    background:#16a34a;
+}
+
+.progress-orange{
+    background:#f59e0b;
+}
+
+.progress-red{
+    background:#dc2626;
+}
+
+.progress-gray{
+    background:#9ca3af;
+}
+
+.budget-item small{
+    display:block;
+    margin-top:8px;
+    color:#6b7280;
+}
+
+/* ---------- Settings ---------- */
+
+.budget-setting{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    padding:16px 0;
+    border-bottom:1px solid #eef2f7;
+}
+
+.budget-setting:last-child{
+    border-bottom:none;
+}
+
+.budget-setting input{
+    width:120px;
+    text-align:right;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width:900px){
+
+    .layout{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+        height:auto;
+        position:relative;
+    }
+
+    .page{
+        padding:20px;
+    }
+
+    .expense-row,
+    .transaction-row{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+
+    .budget-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:6px;
+    }
+}
+
+.delete-btn{
+
+    background:#ef4444;
+
+    padding:8px 10px;
+
+    border:none;
+
+    border-radius:10px;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:14px;
+
+    transition:.2s;
+
+}
+
+.delete-btn:hover{
+
+    background:#dc2626;
+
+}
+
+.notes-box{
+
+    margin:8px 0 18px;
+
+    background:#f8fafc;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+}
+
+.notes-box summary{
+
+    cursor:pointer;
+
+    padding:12px 14px;
+
+    font-weight:600;
+
+    color:#374151;
+
+    list-style:none;
+
+}
+
+.notes-box summary::-webkit-details-marker{
+
+    display:none;
+
+}
+
+.notes-box summary::after{
+
+    content:"▼";
+
+    float:right;
+
+    transition:.2s;
+
+}
+
+.notes-box[open] summary::after{
+
+    transform:rotate(180deg);
+
+}
+
+.notes-box p{
+
+    padding:0 14px 14px;
+
+    color:#6b7280;
+
+    line-height:1.5;
+
+}
+
+.todo-row{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:18px 0;
+
+border-bottom:1px solid #eef2f7;
+
+}
+
+.todo-row:last-child{
+
+border-bottom:none;
+
+}
+
+.todo-actions{
+
+display:flex;
+
+gap:10px;
+
+}
+
+.check-btn{
+
+background:#16a34a;
+
+padding:10px 14px;
+
+}
+
+.check-btn:hover{
+
+background:#15803d;
+
+}
+
+.completed-task{
+
+opacity:.6;
+
+}
+
+.completed-task strong{
+
+text-decoration:line-through;
+
+}
+.card-wide{
+    grid-column:1 / -1;
+}
+
+.chart-container{
+    position:relative;
+    height:320px;
+    width:100%;
+}
+
+.upcoming-payment{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid #eceff3;
+}
+
+.upcoming-payment:last-child{
+    border-bottom:none;
+}
+
+.payment-left{
+    display:flex;
+    flex-direction:column;
+}
+
+.payment-left strong{
+    font-size:16px;
+}
+
+.payment-left small{
+    color:#6b7280;
+}
+
+.payment-right{
+    text-align:right;
+}
+
+.payment-right strong{
+    display:block;
+    font-size:16px;
+}
+
+.payment-right small{
+    color:#6b7280;
+}
+
+.payment-right .today{
+    color:#dc2626;
+    font-weight:600;
+}
+
+.payment-right .tomorrow{
+    color:#f59e0b;
+    font-weight:600;
+}
+/* Dashboard Upcoming Payments */
+.upcoming-card{
+    grid-column: span 2;
+}
+
+@media (max-width:900px){
+    .upcoming-card{
+        grid-column: span 1;
+    }
+}
+
+/* Dashboard layout */
+
+.content-grid{
+    display:grid;
+    grid-template-columns:260px minmax(280px,1fr) minmax(280px,1fr);
+    gap:24px;
+    align-items:start;
+}
+
+.card-wide{
+    grid-column:1 / -1;
+}
+
+.stats-column{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.upcoming-card{
+    grid-column:span 2;
+}
+
+@media (max-width:900px){
+
+    .content-grid{
+        grid-template-columns:1fr;
+    }
+
+    .upcoming-card{
+        grid-column:span 1;
+    }
+}
+
+/* Spending Trend Switch */
+
+.trend-switch{
+    display:flex;
+    background:#eef2ff;
+    border-radius:999px;
+    padding:4px;
+    gap:2px;
+}
+
+.trend-btn{
+    background:transparent;
+    color:#374151;
+    border:none;
+    padding:8px 14px;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.trend-btn:hover{
+    background:white;
+}
+
+.trend-btn.active{
+    background:#2563eb;
+    color:white;
+}
+
+/* Spending Trend Header */
+
+.trend-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+    margin-bottom:18px;
+}
+
+/* Dashboard stat cards under the donut chart */
+
+.dashboard-stats{
+    grid-column:1 / -1;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+}
+
+.dashboard-stats .card{
+    margin-bottom:0;
+}
+
+@media (max-width:1100px){
+    .dashboard-stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media (max-width:700px){
+    .dashboard-stats{
+        grid-template-columns:1fr;
+    }
+}
+
+.trend-switch{
+    display:flex;
+    gap:6px;
+    background:#eef2ff;
+    padding:4px;
+    border-radius:999px;
+}
+
+.trend-btn{
+    background:transparent;
+    color:#374151;
+    border:none;
+    padding:8px 12px;
+    border-radius:999px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.trend-btn.active{
+    background:#2563eb;
+    color:white;
+}

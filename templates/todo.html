@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<header>
+    <h1>✅ Shared To-do</h1>
+    <p>Tasks for Fanni & István</p>
+</header>
+
+<main>
+
+<section class="card">
+
+<h2>Add Task</h2>
+
+<form action="/todo/add" method="post">
+
+<input
+type="text"
+name="task"
+placeholder="Take out the trash..."
+required>
+
+<select name="assigned_to">
+
+<option>Fanni</option>
+
+<option>István</option>
+
+<option>Közös</option>
+
+</select>
+
+<input type="date" name="due_date">
+
+<button>Add Task</button>
+
+</form>
+
+</section>
+
+<section class="card">
+
+<h2>Tasks</h2>
+
+{% if todos %}
+
+{% for todo in todos %}
+
+<div class="todo-row {% if todo.completed %}completed-task{% endif %}">
+
+<div>
+
+<strong>{{ todo.task }}</strong><br>
+
+<small>
+
+👤 {{ todo.assigned_to }}
+
+{% if todo.due_date %}
+
+• 📅 {{ todo.due_date }}
+
+{% endif %}
+
+</small>
+
+</div>
+
+<div class="todo-actions">
+
+<form action="/todo/toggle/{{ todo.id }}" method="post">
+
+<button class="check-btn">
+
+{% if todo.completed %}
+
+↩️
+
+{% else %}
+
+✔️
+
+{% endif %}
+
+</button>
+
+</form>
+
+<form action="/todo/delete/{{ todo.id }}" method="post">
+
+<button class="delete-btn">🗑</button>
+
+</form>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<p>No tasks yet.</p>
+
+{% endif %}
+
+</section>
+
+</main>
+
+{% endblock %}
