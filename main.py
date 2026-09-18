@@ -163,24 +163,16 @@ def create_token(username):
 
 
 def get_current_user(request: Request):
-
     token = request.cookies.get("token")
 
     if not token:
         return None
 
     try:
-        payload = jwt.decode(
-            token,
-            SECRET_KEY,
-            algorithms=[ALGORITHM]
-        )
-
-        return payload["username"]
-
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload.get("username")
     except JWTError:
         return None
-
 
 # ----------------------
 # Dashboard
